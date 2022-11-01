@@ -1,1 +1,1 @@
-# Kuznets-Curve
+# Kuznets Curve Project
