@@ -7,18 +7,65 @@ main <- function(){
 }
 
 
-source("01_admin/initialize/admin.R")
+source("01_admin/02_preamble/R/admin.R")
+# 
+ # source("01_admin/initialize/admin.R")
+# #initializeを呼び出すとrlangのバージョンを戻すことを要求されるが、受け入れると古すぎる→受け入れなくてもよい？
+#rlangのバージョンを新しくしたい→r自体を更新したらできた
+# renv::update()
+# library(rlang)
+# package_version("rlang")
+# library()
 
+
+# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
+
+#packageのフォルダのコード実行したら更新された
+# library()
+# #自分でlibraryを指定してinstallする
+# gc()
+# # 
+# library_list<-c(
+#   "tidyverse",
+#   "tidyr",
+#   "dplyr",
+#   "purrr",
+#   "zoo",
+#   "devtools",
+#   "usethis",
+#   "cli"
+# )
+# install.packages(library_list)
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+# library(zoo)
+# library(rlang)
+# library(devtools)
+# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
+# 
+# update.packages("rlang")
+# package_version("rlang")
+# update.packages("cli")
+# package_version("cli")
+# #全体的にパッケージが古い問題
+# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
+
+.libPaths()
+#renvをいじる必要ありそう
+
+#-------
 source("03_build/gdp_tidy/code/build.R")
 
 source("03_build/inequality_tidy/code/build.R")   
 
 source("03_build/gdp_ready/code/build.R")
 
-#now
 source("03_build/inequality_ready/code/build.R")   
 
-source("03_build/master/code/build.R")   
+source("03_build/master/code/build.R")  
+
+source("04_analyze/initial/code/analyze.R")  
 
 preamble <- function(){
   lets('set', 'preamble')

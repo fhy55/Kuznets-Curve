@@ -26,7 +26,8 @@ packages_list <- function(){
              "xtable",
              "tictoc",
              "rlang",
-             "box")
+             "box"
+             )
   return(lists)
 }
 
@@ -36,3 +37,4 @@ update_list <- function(lists){
 }
 
 main()
+

@@ -55,7 +55,7 @@ us_gini$country<-"USA"
 us_gini
 japan_gini$country<-"JPN"
 japan_gini
-
+# 
 install.packages("zoo")
 library(zoo)
 japan_gini$gini<-na.approx(japan_gini$gini)
@@ -65,17 +65,17 @@ us_gini$gini<-na.approx(us_gini$gini)
 
 
 japan_gini_multiple_5 <- japan_gini%>%
-  filter(year %% 5==0)
+  dplyr::filter(year %% 5==0)
 japan_gini_multiple_5
 
 us_gini_multiple_5 <- us_gini%>%
-  filter(year %% 5==0)
+  dplyr::filter(year %% 5==0)
 us_gini_multiple_5
 
 #5年ずつ抽出する
 
 convine_japan_us_gini <- us_gini_multiple_5%>%
-  full_join(japan_gini_multiple_5)
+  dplyr::full_join(japan_gini_multiple_5)
 # View(convine_japan_us_gini)
 #------ここまでが完成したところ
 
