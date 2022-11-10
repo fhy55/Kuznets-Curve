@@ -8,7 +8,17 @@ main <- function(){
 
 
 source("01_admin/initialize/admin.R")
-       
+
+source("03_build/gdp_tidy/code/build.R")
+
+source("03_build/inequality_tidy/code/build.R")   
+
+source("03_build/gdp_ready/code/build.R")
+
+#now
+source("03_build/inequality_ready/code/build.R")   
+
+source("03_build/master/code/build.R")   
 
 preamble <- function(){
   lets('set', 'preamble')
