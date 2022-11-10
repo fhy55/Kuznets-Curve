@@ -6,9 +6,9 @@ main <- function(){
   postamble()
 }
 
+
 source("01_admin/initialize/admin.R")
        
-       here::here('04_analyze', object_name, 'code', 'analyze.R'))
 
 preamble <- function(){
   lets('set', 'preamble')
@@ -16,10 +16,11 @@ preamble <- function(){
 
 
 build <- function(){
-
+  lets("build","master")
 }
 
 
+##追記した
 analyze <- function(){
   lets('analyze', 'initial')
 }
