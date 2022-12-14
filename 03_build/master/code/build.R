@@ -2,6 +2,7 @@
 master_data<-convine_japan_us_gini%>%
   dplyr::inner_join(gdp_data,by="year","country")
 
+#これはwide形式になっている？
 master_data
 JPN_master<-master_data%>%
   dplyr::filter(country=="JPN")%>%
@@ -17,4 +18,8 @@ US_master
 
 #何度も変換していて心配,最初から日本とアメリカ別のままやればよかったのでは。
 
-
+m<- function(a,t){
+  return(a)
+  print(t)
+}
+m(1,0)
