@@ -123,11 +123,13 @@ JPN_master%>%
   labs(title="【JPN】scatter plot ",subtitle="x:lgdp per capita y:gini",y="gini",x="lgdp per capita")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size = 20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )
 
+cor(JPN_master$gini,JPN_master$lgdp_per_capita)
+cor(US_master$gini,US_master$lgdp_per_capita)
 
 US_master%>%
   ggplot2::ggplot()+
@@ -135,7 +137,7 @@ US_master%>%
   labs(title="【US】scatter plot ",subtitle="x:lgdp per capita y:gini",y="gini",x="lgdp per capita")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size  = 20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )
@@ -146,10 +148,10 @@ US_master%>%
   ggplot2::ggplot(aes(x=year,y=lgdp_per_capita))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
-  labs(title="【US】gdp per capita",subtitle="time series",y="gdp per capita")+
+  labs(title="【US】gdp per capita",subtitle="time series",y="lgdp per capita")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size  = 20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )+
@@ -159,10 +161,10 @@ JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=lgdp_per_capita))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
-  labs(title="【JPN】gdp per capita",subtitle="time series",y="gdp per capita")+
+  labs(title="【JPN】gdp per capita",subtitle="time series",y="lgdp per capita")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size  = 20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )+
@@ -174,10 +176,10 @@ US_master%>%
   ggplot2::ggplot(aes(x=year,y=gini))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
-  labs(title="【US】gdp per capita",subtitle="time series",y="gini")+
+  labs(title="【US】gini",subtitle="time series",y="gini")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size =   20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )+
@@ -187,10 +189,10 @@ JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=gini))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
-  labs(title="【JPN】gdp per capita",subtitle="time series",y="gini")+
+  labs(title="【JPN】gini",subtitle="time series",y="gini")+
   theme(
     plot.title    = element_text(face = "bold", color = "blue"), 
-    axis.title.x  = element_text(hjust = 20), 
+    axis.title.x  = element_text(size = 20), 
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )+
