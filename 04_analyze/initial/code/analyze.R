@@ -270,7 +270,7 @@ axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる
     theme_bw()
   
   ggplot2::ggplot()+
-    ggplot2::geom_line(data=JPN_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
+    ggplot2::geomni_line(data=JPN_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
     ggplot2::geom_line(data=JPN_master,aes(x=year,y=variable_scaler(gini,y1.lim, y2.lim),color="gini"),size=1)+
     scale_y_continuous( sec.axis=sec_axis(~(axis_scaler(., y1.lim, y2.lim)),name="gini"))+
     labs(title="【JPN】gini　lgdp_per_capita",subtitle="time series")+
