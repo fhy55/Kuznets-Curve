@@ -157,7 +157,7 @@ US_master%>%
   )+
   scale_x_continuous(breaks = seq(US_master$year[1],US_master$year[length(US_master$year)],5))
 
-JPN_master%>%
+JPN_time_lgdp_per_capita<-JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=lgdp_per_capita))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
@@ -185,7 +185,7 @@ US_master%>%
   )+
   scale_x_continuous(breaks = seq(US_master$year[1],US_master$year[length(US_master$year)],5))
 
-JPN_master%>%
+JPN_time_gini<-JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=gini))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
@@ -198,7 +198,120 @@ JPN_master%>%
   )+
   scale_x_continuous(breaks = seq(JPN_master$year[1],JPN_master$year[length(JPN_master$year)],5))
 
+#2軸グラフを作る
 
+
+
+
+#変数のスケールを変形する
+
+y1.lim <- c(-12, -9) #左軸 temperature
+y2.lim <- c(0.3, 0.5) #右軸 Atmospheric_pressure
+
+variable_scaler<- function(p, lim1, lim2){    #pとlim1とlim2に対する処理を{}にかく
+  to_zero <- p-lim2[1]     #lim2[1]は、軸スケールの最小値。#4でlim2は、y2.lim（右軸）であり、y2.limの最小値は860。pは気圧の各数値。
+  y1_range <- lim1[2]-lim1[1]     #lim1[2]はy1.limの最大値から、lim1[1]はy1.limの最小値を引いたものがy1.lim（左軸）幅ということ。
+  y2_range <- lim2[2]-lim2[1]     #上記と同様y2.lim（右軸）の幅
+  scaled <- to_zero*y1_range/y2_range    # 気圧の各数値から、最小値860をひく。これに、y1幅/y2幅をかける。y2（右軸）の幅表示をy1（左軸）の幅表示に合わせる作業。
+  from_zero <- scaled + lim1[1]     # 左軸の最小値をゼロとするため、もし0以上であれば、その分y1の最小値を足しておく。
+  return(from_zero)}   #2 この関数を使えば、数値の修正が簡単。
+
+axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる。.は左軸情報を表す。左軸とlim1とlim2に対する処理を{}にかく
+  to_zero <- p-lim1[1]  #左軸の数値-y1（左軸）の最小値
+  y1_range <- lim1[2]-lim1[1] 
+  y2_range <- lim2[2]-lim2[1]   # variable_scalerの同じ表記のところと同じ意味
+  scaled <- to_zero*y2_range/y1_range   #pは、左軸情報として最小〜最大値があるので、それぞれにy2幅/y1幅をかけることで、左軸情報が右軸情報に変える。
+  from_zero <- scaled + lim2[1]   #右軸の最小値分足しておく。
+  return(from_zero)}  #3   この関数を使えば、数値の修正が簡単。
+
+ggplot()+geom_line(data=temp_pressure_kumamoto2020, 
+                   aes(x=Day, y=Temperature, color="Temperature")) +
+  geom_line(data=temp_pressure_kumamoto2020, aes(x=Day, 
+                                                 y=variable_scaler(Atmospheric_pressure, 
+                                                                   y1.lim, y2.lim), color="Atmospheric_pressure")) + 
+  scale_y_continuous(limit=y1.lim, breaks=c(0,10,20,30,40), sec.axis=sec_axis(~(azis_scaler(., y1.lim, y2.lim)), 
+                                                                              breaks=c(850,900,950,1000,1050), name="Atmospheric_pressure") )+
+  theme_bw()+theme(text=element_text(size=14),legend.position = c(0.98, 0.98),legend.justification = c(0.98, 0.98), legend.background=element_rect(fill="white",color="black"))+scale_x_date(breaks = seq(as.Date("2020-01-01"), as.Date("2020-12-31"), by="2 month"),labels=date_format("%Y/%m")) #4
+
+variable_scaler(US_master$gini)
+
+#2軸グラフ完成
+
+y1.lim <- c(-12, -9) #左軸 temperature
+y2.lim <- c(0.3, 0.5) #右軸 Atmospheric_pressure
+
+variable_scaler<- function(p, lim1, lim2){    #pとlim1とlim2に対する処理を{}にかく
+  to_zero <- p-lim2[1]     #lim2[1]は、軸スケールの最小値。#4でlim2は、y2.lim（右軸）であり、y2.limの最小値は860。pは気圧の各数値。
+  y1_range <- lim1[2]-lim1[1]     #lim1[2]はy1.limの最大値から、lim1[1]はy1.limの最小値を引いたものがy1.lim（左軸）幅ということ。
+  y2_range <- lim2[2]-lim2[1]     #上記と同様y2.lim（右軸）の幅
+  scaled <- to_zero*y1_range/y2_range    # 気圧の各数値から、最小値860をひく。これに、y1幅/y2幅をかける。y2（右軸）の幅表示をy1（左軸）の幅表示に合わせる作業。
+  from_zero <- scaled + lim1[1]     # 左軸の最小値をゼロとするため、もし0以上であれば、その分y1の最小値を足しておく。
+  return(from_zero)}   #2 この関数を使えば、数値の修正が簡単。
+
+axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる。.は左軸情報を表す。左軸とlim1とlim2に対する処理を{}にかく
+  to_zero <- p-lim1[1]  #左軸の数値-y1（左軸）の最小値
+  y1_range <- lim1[2]-lim1[1] 
+  y2_range <- lim2[2]-lim2[1]   # variable_scalerの同じ表記のところと同じ意味
+  scaled <- to_zero*y2_range/y1_range   #pは、左軸情報として最小〜最大値があるので、それぞれにy2幅/y1幅をかけることで、左軸情報が右軸情報に変える。
+  from_zero <- scaled + lim2[1]   #右軸の最小値分足しておく。
+  return(from_zero)}  #3   この関数を使えば、数値の修正が簡単。
+
+  ggplot2::ggplot()+
+  ggplot2::geom_line(data=US_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
+  ggplot2::geom_line(data=US_master,aes(x=year,y=variable_scaler(gini,y1.lim, y2.lim),color="gini"),size=1)+
+  scale_y_continuous( sec.axis=sec_axis(~(axis_scaler(., y1.lim, y2.lim)),name="gini"))+
+    labs(title="【US】gini　lgdp_per_capita",subtitle="time series")+
+    theme(
+      plot.title    = element_text(face = "bold", color = "blue"), 
+      axis.title.x  = element_text(size = 20), 
+      axis.title.y  = element_text(size = 20), 
+      plot.subtitle = element_text(color = "blue", size = 12),
+    )+
+    theme_bw()
+  
+  ggplot2::ggplot()+
+    ggplot2::geom_line(data=JPN_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
+    ggplot2::geom_line(data=JPN_master,aes(x=year,y=variable_scaler(gini,y1.lim, y2.lim),color="gini"),size=1)+
+    scale_y_continuous( sec.axis=sec_axis(~(axis_scaler(., y1.lim, y2.lim)),name="gini"))+
+    labs(title="【JPN】gini　lgdp_per_capita",subtitle="time series")+
+    theme(
+      plot.title    = element_text(face = "bold", color = "blue"), 
+      axis.title.x  = element_text(size = 20), 
+      axis.title.y  = element_text(size = 20), 
+      plot.subtitle = element_text(color = "blue", size = 12))+  scale_x_continuous(breaks = seq(JPN_master$year[1],JPN_master$year[length(JPN_master$year)],5))+
+    theme_bw()
+
+
+
+
+
+#gini 0.3~0.5
+US_master%>%
+  ggplot2::ggplot()+
+  ggplot2::geom_line(aes(x=year,y=gini),size=1)+
+  ggplot2::geom_line(aes(x=year,y=lgdp_per_capita),size=1)+
+  ggplot2::geom_point(aes(x=year,y=gini))+
+  labs(title="【US】gini,lgdp_per_capita",subtitle="time series",y="")+
+  theme(
+    plot.title    = element_text(face = "bold", color = "blue"), 
+    axis.title.x  = element_text(size =   20), 
+    axis.title.y  = element_text(size = 20), 
+    plot.subtitle = element_text(color = "blue", size = 12),
+  )+
+  scale_x_continuous(breaks = seq(US_master$year[1],US_master$year[length(US_master$year)],5))
+
+JPN_master%>%
+  ggplot2::ggplot(aes(x=year,y=gini))+
+  ggplot2::geom_line(size=1)+
+  ggplot2::geom_point()+
+  labs(title="【JPN】gini",subtitle="time series",y="gini")+
+  theme(
+    plot.title    = element_text(face = "bold", color = "blue"), 
+    axis.title.x  = element_text(size = 20), 
+    axis.title.y  = element_text(size = 20), 
+    plot.subtitle = element_text(color = "blue", size = 12),
+  )+
+  scale_x_continuous(breaks = seq(JPN_master$year[1],JPN_master$year[length(JPN_master$year)],5))
 
 
 
@@ -269,7 +382,7 @@ print(JPN_general_reg)
 #目的変数がI(1)に従うか検定する
 tseries::adf.test(US_master$gini,k=1)
 tseries::adf.test(JPN_master$gini,k=1)
-
+JPN_master$gini
 
 #一階さ分用のマスター
 difference_JPN_master<-JPN_master%>%
@@ -300,7 +413,7 @@ var_nam = c("(Intercept)" = "Constant","lgdp_per_capita" = "log gdp per capita",
             "diff_lgdp_per_capita"="Δlog gdp per capita","I(diff_lgdp_per_capita^2)"="Δsquare of log gdp per capita")
 
 msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam)
-msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam,estimate = "p.value")
+msummary(regs,fmt = '%.2f',title="P値 time detrend Linear RegとFD estimator比較",coef_map = var_nam,estimate = "p.value")
 
 
 
