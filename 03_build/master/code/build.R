@@ -15,11 +15,7 @@ US_master<-master_data%>%
   dplyr::select(year,country,gini,us_population,us_gdp,us_gdp_per_capita)
 US_master
 
+output_dir_path <- here::here("03_build/master/output")
+file_path <- here::here(output_dir_path,"master.csv")
+write.csv(x=master_data,file = file_path ,row.names = FALSE)
 
-#何度も変換していて心配,最初から日本とアメリカ別のままやればよかったのでは。
-
-m<- function(a,t){
-  return(a)
-  print(t)
-}
-m(1,0)

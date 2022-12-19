@@ -1,15 +1,13 @@
-main <- function(){
-  box::use(`functions`/basics)
+replicate_US_master<-US_master
+replicate_JPN_master<-JPN_master
 
-}
-
-remove_contry_name_US_master <- US_master%>%
+remove_contry_name_US_master <- replicate_US_master%>%
   dplyr::select(-country)%>%
   dplyr::rename(gdp = us_gdp,population=us_population,
                 gdp_per_capita = us_gdp_per_capita)
 
 
-remove_contry_name_JPN_master <- JPN_master%>%
+remove_contry_name_JPN_master <- replicate_JPN_master%>%
   dplyr::select(-country)%>%
   dplyr::rename(gdp=japan_gdp,population=japan_population,gdp_per_capita=japan_gdp_per_capita)
 
@@ -20,7 +18,7 @@ US_master<-remove_contry_name_US_master%>%
 JPN_master<-remove_contry_name_JPN_master%>%
   dplyr::mutate(lgdp=log(gdp),lpopulation=log(population),lgdp_per_capita=log(gdp_per_capita),lgini=log(gini))
 US_master
-
+JPN_master
 #記述統計
 library("kableExtra")
 
@@ -34,7 +32,6 @@ US_description<-tribble(
   "year","年",                round(mean(US_master$year),2)    , round(sd(US_master$year),2),length(US_master$year)
 )
 
-round(mean(US_master$lgini),2)
 JPN_description<-tribble(
   ~variables,    ~explanation,     ~mean,        ~std.dev,      ~observation,
   "gini",   "ジニ指数"    , round(mean(JPN_master$gini),2)   , round(sd(JPN_master$gini),2) , length(JPN_master$gini),
@@ -44,46 +41,29 @@ JPN_description<-tribble(
   "year","年",                round(mean(JPN_master$year),2)    , round(sd(JPN_master$year),2),length(JPN_master$year)
 )
 
-# JPN_description<-tribble(
-#   ~variables,    ~explanation,     ~mean,        ~std.dev,      ~observation,
-#   "gini",   "ジニ指数"    , round(mean(JPN_master$gini),2)   , round(sd(JPN_master$gini),2) , length(JPN_master$gini),
-#   "poplulation","人口",        round(mean(JPN_master$population),2)   , round(sd(JPN_master$population),2),length(JPN_master$population),
-#   "gdp_per_capita", "一人当たりGDP" ,mean(JPN_master$gdp_per_capita)   , sd(JPN_master$gdp_per_capita),length(JPN_master$gdp_per_capita),
-#   "lgini",   "ジニ指数"    , round(mean(JPN_master$lgini),2)   , round(sd(JPN_master$lgini),2) , length(JPN_master$lgini),
-#   "lpoplulation","人口",        round(mean(JPN_master$lpopulation),2)   , round(sd(JPN_master$lpopulation),2),length(JPN_master$lpopulation),
-#   "lgdp_per_capita", "一人当たりGDP" ,mean(JPN_master$lgdp_per_capita)   , sd(JPN_master$lgdp_per_capita),length(JPN_master$lgdp_per_capita),
-#   "year","年",                round(mean(JPN_master$year),2)    , round(sd(JPN_master$year),2),length(JPN_master$year)
-# )
+
 
 library(kableExtra)
-US_description%>%
+US_description_table <- US_description%>%
   kableExtra::kbl(digits = 2,caption="US 記述統計表")%>%
   kableExtra::kable_styling(full_width=FALSE)%>%
   kable_classic_2()
+
+#出力を考える
+US_description_table 
+
+output_dir_path <- here::here("04_analyze/initial/table")
+file_path <- here::here(output_dir_path,"US_description_table.csv")
+write.csv(x=convine_japan_us_gini,file = file_path ,row.names = FALSE)
 
 JPN_description%>%
   kableExtra::kbl(digits = 2,caption="JPN 記述統計表")%>%
   kableExtra::kable_styling(full_width=FALSE)%>%
   kable_classic_2()
 
-# 
-# US_master_description<-US_master%>%
-#   summarytools::descr(var=,stats = c("mean", "sd", "min", "max", "n.valid"),
-#                       transpose = TRUE, headings = FALSE)
-# 
-# JPN_master_description<-JPN_master%>%
-#   summarytools::descr(var=,stats = c("mean", "sd", "min", "max", "n.valid"),
-#                       transpose = TRUE, headings = FALSE)
-# 
-# US_master_description
-# JPN_master_description
-# #出力
-# write.csv(US_master_description,"04_analyze/initial/table/US_description.csv")
-# write.csv(US_master_description,"04_analyze/initial/table/JPN_description.csv")
-# 
+
 
 #散布図を描く
-install.packages("ggplot2")
 library(ggplot2)
 # #rlangのバージョンが古い問題
 # library(rlang)
@@ -91,7 +71,7 @@ library(ggplot2)
 # remove.packages(rlang)
 
 JPN_master
-JPN_master%>%
+JPN_scatter <-JPN_master%>%
   ggplot2::ggplot()+
   ggplot2::geom_point(aes(x=lgdp_per_capita,y=gini))+
   labs(title="【JPN】scatter plot ",subtitle="x:lgdp per capita y:gini",y="gini",x="lgdp per capita")+
@@ -102,10 +82,13 @@ JPN_master%>%
     plot.subtitle = element_text(color = "blue", size = 12),
   )
 
+file_path <- here::here(output_dir_path,"JPN_description_table.png")
+ggsave(file = file_path, plot = JPN_scatter)
+
 cor(JPN_master$gini,JPN_master$lgdp_per_capita)
 cor(US_master$gini,US_master$lgdp_per_capita)
 
-US_master%>%
+US_scatter <-US_master%>%
   ggplot2::ggplot()+
   ggplot2::geom_point(aes(x=lgdp_per_capita,y=gini))+
   labs(title="【US】scatter plot ",subtitle="x:lgdp per capita y:gini",y="gini",x="lgdp per capita")+
@@ -115,6 +98,9 @@ US_master%>%
     axis.title.y  = element_text(size = 20), 
     plot.subtitle = element_text(color = "blue", size = 12),
   )
+
+file_path <- here::here(output_dir_path,"US_description_table.png")
+ggsave(file = file_path, plot = US_scatter)
 
 #時系列変化
 
@@ -273,13 +259,16 @@ tseries::adf.test(JPN_master$gini,k=1)
 JPN_master$gini
 
 #一階さ分用のマスター
-difference_JPN_master <- JPN_master%>%
-  mutate(diff_lgdp_per_capita=lgdp_per_capita-dplyr::lag(lgdp_per_capita),year=year,diff_gini=gini-lag(gini))
-difference_JPN_master<-difference_JPN_master%>%
+JPN_lag_gini <-JPN_master$gini-dplyr::lag(JPN_master$gini)
+difference_JPN_master <- JPN_master %>%
+  dplyr::mutate(diff_lgdp_per_capita=lgdp_per_capita-dplyr::lag(lgdp_per_capita),year=year,diff_gini=JPN_lag_gini)
+View(difference_JPN_master)
+difference_JPN_master<-difference_JPN_master %>%
   slice(-1)
 
+US_lag_gini <-US_master$gini-dplyr::lag(US_master$gini)
 difference_US_master<-US_master%>%
-  mutate(diff_lgdp_per_capita=lgdp_per_capita-dplyr::lag(lgdp_per_capita),year=year,diff_gini=gini-lag(gini))
+  mutate(diff_lgdp_per_capita=lgdp_per_capita-dplyr::lag(lgdp_per_capita),year=year,diff_gini=US_lag_gini)
 difference_US_master<-difference_US_master%>%
   slice(-1)
 
@@ -334,43 +323,4 @@ var_nam = c("(Intercept)" = "Constant","lgdp_per_capita" = "log gdp per capita",
 msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam)
 
 
-
-
-
-
-
-
-# #差分における時間はどのようにモデルに入れる？時間を差分取ると多重共線性
-
-difference_JPN_master
-install.packages("plm")
-library(plm)
-f<-"gini ~ 0 + gdp_per_capita+I(gdp_per_capita^2)+year"
-f<-as.formula(f)
-e<-plm(formula=f,data=JPN_master,effect="individual",model="fd",index=c("year"))
-summary(e)
-
-#ラグ変数を追加するには、dplyrのラグで作れる
-
-#追加の時系列分析は、STATAで行う
-write.csv(US_master,"04_analyze/initial/table/US_master.csv")
-write.csv(JPN_master,"04_analyze/initial/table/JPN_master.csv")
-
-
-#トレンド制御　系列相関にロバストな回帰（FGL
-
-US_general_reg<-lm_robust(gini~gdp_per_capita+I(gdp_per_capita^2)+year,data=US_master,se_type="HC3")
-print(US_general_reg)
-
-JPN_general_reg<-lm_robust(gini~gdp_per_capita+I(gdp_per_capita^2)+year,data=JPN_master,se_type="HC3")
-print(JPN_general_reg)
-
-#回帰してから誤差項をadfテストするのでは？
-tseries::adf.test(US_general_reg,k=1)
-#異種分散性テスト
-#dickyfuller
-
-
-
-main()
 

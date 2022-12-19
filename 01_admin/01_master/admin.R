@@ -8,37 +8,23 @@ main <- function(){
 
 
 source("01_admin/02_preamble/R/admin.R")
-# 
- # source("01_admin/initialize/admin.R")
-# #initializeを呼び出すとrlangのバージョンを戻すことを要求されるが、受け入れると古すぎる→受け入れなくてもよい？
-#rlangのバージョンを新しくしたい→r自体を更新したらできた
-# renv::update()
-# library(rlang)
-# package_version("rlang")
-# library()
 
-
-# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
-
-#packageのフォルダのコード実行したら更新された
-# library()
-# #自分でlibraryを指定してinstallする
-# gc()
-# # 
 library_list<-c(
   "tidyverse",
   "tidyr",
   "dplyr",
   "zoo",
+  "ggplot2",
+  "estimatr",
+  "lmtest",
+  "modelsummary"
+  
 )
 install.packages(library_list)
 library(tidyverse)
 library(dplyr)
 library(tidyr)
 
-
-.libPaths()
-#renvをいじる必要ありそう
 
 #-------
 source("03_build/gdp_tidy/code/build.R")
