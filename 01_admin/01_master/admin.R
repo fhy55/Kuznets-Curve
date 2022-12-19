@@ -25,31 +25,17 @@ source("01_admin/02_preamble/R/admin.R")
 # #自分でlibraryを指定してinstallする
 # gc()
 # # 
-# library_list<-c(
-#   "tidyverse",
-#   "tidyr",
-#   "dplyr",
-#   "purrr",
-#   "zoo",
-#   "devtools",
-#   "usethis",
-#   "cli"
-# )
-# install.packages(library_list)
+library_list<-c(
+  "tidyverse",
+  "tidyr",
+  "dplyr",
+  "zoo",
+)
+install.packages(library_list)
 library(tidyverse)
 library(dplyr)
 library(tidyr)
-# library(zoo)
-# library(rlang)
-# library(devtools)
-# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
-# 
-# update.packages("rlang")
-# package_version("rlang")
-# update.packages("cli")
-# package_version("cli")
-# #全体的にパッケージが古い問題
-# devtools::install_github("r-lib/rlang", build_vignettes = TRUE)
+
 
 .libPaths()
 #renvをいじる必要ありそう
