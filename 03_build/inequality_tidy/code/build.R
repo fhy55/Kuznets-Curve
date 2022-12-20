@@ -1,4 +1,4 @@
-#gdp_tidy
+#inequality_tidy
 
 raw_gini_path <- here::here("02_raw/inequality/data/Gini.xlsx")
 raw_gini_data <- readxl::read_excel(raw_gini_path,col_names = FALSE,skip=1)

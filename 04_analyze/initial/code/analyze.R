@@ -1,5 +1,5 @@
-replicate_US_master<-US_master
-replicate_JPN_master<-JPN_master
+replicate_US_master <-US_master
+replicate_JPN_master <-JPN_master
 
 remove_contry_name_US_master <- replicate_US_master%>%
   dplyr::select(-country)%>%
@@ -11,7 +11,7 @@ remove_contry_name_JPN_master <- replicate_JPN_master%>%
   dplyr::select(-country)%>%
   dplyr::rename(gdp=japan_gdp,population=japan_population,gdp_per_capita=japan_gdp_per_capita)
 
-US_master<-remove_contry_name_US_master%>%
+US_master<-remove_contry_name_US_master %>%
   dplyr::mutate(lgdp=log(gdp),lpopulation=log(population),lgdp_per_capita=log(gdp_per_capita),lgini=log(gini))
 
 
@@ -20,7 +20,7 @@ JPN_master<-remove_contry_name_JPN_master%>%
 US_master
 JPN_master
 #記述統計
-library("kableExtra")
+
 
 #平均,分散,データ数,最大値,最小値
 US_description<-tribble(
@@ -42,35 +42,32 @@ JPN_description<-tribble(
 )
 
 
+file_path <- here::here(output_dir_path,"US_description.csv")
+write.csv(US_description,file_path)
 
-library(kableExtra)
+file_path <- here::here(output_dir_path,"JPN_description.pdf")
+write.csv(JPN_description,file_path)
+
+
 US_description_table <- US_description%>%
   kableExtra::kbl(digits = 2,caption="US 記述統計表")%>%
   kableExtra::kable_styling(full_width=FALSE)%>%
   kable_classic_2()
 
-#出力を考える
-US_description_table 
 
-output_dir_path <- here::here("04_analyze/initial/table")
-file_path <- here::here(output_dir_path,"US_description_table.csv")
-write.csv(x=convine_japan_us_gini,file = file_path ,row.names = FALSE)
 
-JPN_description%>%
+JPN_description_table <-JPN_description%>%
   kableExtra::kbl(digits = 2,caption="JPN 記述統計表")%>%
   kableExtra::kable_styling(full_width=FALSE)%>%
   kable_classic_2()
 
 
+save_kable(
+  US_description_table,
+  file=file_path)
+
 
 #散布図を描く
-library(ggplot2)
-# #rlangのバージョンが古い問題
-# library(rlang)
-# update.packages("rlang")
-# remove.packages(rlang)
-
-JPN_master
 JPN_scatter <-JPN_master%>%
   ggplot2::ggplot()+
   ggplot2::geom_point(aes(x=lgdp_per_capita,y=gini))+
@@ -85,8 +82,6 @@ JPN_scatter <-JPN_master%>%
 file_path <- here::here(output_dir_path,"JPN_description_table.png")
 ggsave(file = file_path, plot = JPN_scatter)
 
-cor(JPN_master$gini,JPN_master$lgdp_per_capita)
-cor(US_master$gini,US_master$lgdp_per_capita)
 
 US_scatter <-US_master%>%
   ggplot2::ggplot()+
@@ -102,9 +97,13 @@ US_scatter <-US_master%>%
 file_path <- here::here(output_dir_path,"US_description_table.png")
 ggsave(file = file_path, plot = US_scatter)
 
+cor(JPN_master$gini,JPN_master$lgdp_per_capita)
+cor(US_master$gini,US_master$lgdp_per_capita)
+
+
 #時系列変化
 
-US_master%>%
+US_time_lgdp <- US_master%>%
   ggplot2::ggplot(aes(x=year,y=lgdp_per_capita))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
@@ -117,7 +116,7 @@ US_master%>%
   )+
   scale_x_continuous(breaks = seq(US_master$year[1],US_master$year[length(US_master$year)],5))
 
-JPN_time_lgdp_per_capita<-JPN_master%>%
+JPN_time_lgdp<- JPN_time_lgdp_per_capita<-JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=lgdp_per_capita))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
@@ -132,7 +131,7 @@ JPN_time_lgdp_per_capita<-JPN_master%>%
 
 
 
-US_master%>%
+US_time_gini <-US_master%>%
   ggplot2::ggplot(aes(x=year,y=gini))+
   ggplot2::geom_line(size=1)+
   ggplot2::geom_point()+
@@ -144,6 +143,7 @@ US_master%>%
     plot.subtitle = element_text(color = "blue", size = 12),
   )+
   scale_x_continuous(breaks = seq(US_master$year[1],US_master$year[length(US_master$year)],5))
+
 
 JPN_time_gini<-JPN_master%>%
   ggplot2::ggplot(aes(x=year,y=gini))+
@@ -158,12 +158,22 @@ JPN_time_gini<-JPN_master%>%
   )+
   scale_x_continuous(breaks = seq(JPN_master$year[1],JPN_master$year[length(JPN_master$year)],5))
 
+
+file_path <- here::here(output_dir_path,"JPN_time_lgdp.png")
+ggsave(file = file_path, plot = JPN_time_lgdp)
+
+
+file_path <- here::here(output_dir_path,"US_time_lgdp.png")
+ggsave(file = file_path, plot = US_time_lgdp)
+
+
+file_path <- here::here(output_dir_path,"JPN_time_gini.png")
+ggsave(file = file_path, plot = JPN_time_gini)
+
+file_path <- here::here(output_dir_path,"US_time_gini.png")
+ggsave(file = file_path, plot = US_time_gini)
+
 #2軸グラフを作る
-
-
-
-
-#変数のスケールを変形する
 
 
 
@@ -188,7 +198,7 @@ axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる
   from_zero <- scaled + lim2[1]   #右軸の最小値分足しておく。
   return(from_zero)}  #3   この関数を使えば、数値の修正が簡単。
 
-  ggplot2::ggplot()+
+US_dual_axis_lgdp_gini <-ggplot2::ggplot()+
   ggplot2::geom_line(data=US_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
   ggplot2::geom_line(data=US_master,aes(x=year,y=variable_scaler(gini,y1.lim, y2.lim),color="gini"),size=1)+
   scale_y_continuous( sec.axis=sec_axis(~(axis_scaler(., y1.lim, y2.lim)),name="gini"))+
@@ -201,7 +211,7 @@ axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる
     )+
     theme_bw()
   
-  ggplot2::ggplot()+
+JPN_dual_axis_lgdp_gini<- ggplot2::ggplot()+
     ggplot2::geom_line(data=JPN_master,aes(x=year,y=lgdp_per_capita,color="lgdp per capita"),size=1)+
     ggplot2::geom_line(data=JPN_master,aes(x=year,y=variable_scaler(gini,y1.lim, y2.lim),color="gini"),size=1)+
     scale_y_continuous( sec.axis=sec_axis(~(axis_scaler(., y1.lim, y2.lim)),name="gini"))+
@@ -213,7 +223,13 @@ axis_scaler <- function(p, lim1, lim2){   #pは#4でいうところの.になる
       plot.subtitle = element_text(color = "blue", size = 12))+  scale_x_continuous(breaks = seq(JPN_master$year[1],JPN_master$year[length(JPN_master$year)],5))+
     theme_bw()
 
-
+  file_path <- here::here(output_dir_path,"JPN_dual_axis_lgdp_gini.png")
+  ggsave(file = file_path, plot = JPN_dual_axis_lgdp_gini)
+  
+  
+  file_path <- here::here(output_dir_path,"US_dual_axis_lgdp_gini.png")
+  ggsave(file = file_path, plot = US_dual_axis_lgdp_gini)
+  
 
 #分析
 #自己共分散を計算する
@@ -230,18 +246,14 @@ plot(US_lgdp_acf,main="【US】lgdp per capita コレログラム")
 JPN_lgdp_acf<-acf(JPN_master$lgdp_per_capita,plot=FALSE)
 plot(JPN_lgdp_acf,main="【JPN】lgdp per capita コレログラム")
 
-install.packages("tseries")
-library(tseries)
 
 #一番基本的なモデル(タイムトレンドを考慮,SE typeもhansenみて指定したい)
-library(estimatr)
 US_general_reg<-lm_robust(gini~lgdp_per_capita+I(lgdp_per_capita^2)+year,data=US_master)
 print(US_general_reg)
 
 JPN_general_reg<-lm_robust(gini~lgdp_per_capita+I(lgdp_per_capita^2)+year,data=JPN_master)
 print(JPN_general_reg)
 #異種分散性テスト
-install.packages("lmtest")
 lmtest::bptest(US_general_reg)
 lmtest::bptest(JPN_general_reg)
 
@@ -256,13 +268,14 @@ print(JPN_general_reg)
 #目的変数がI(1)に従うか検定する
 tseries::adf.test(US_master$gini,k=1)
 tseries::adf.test(JPN_master$gini,k=1)
-JPN_master$gini
+JPN_master
 
-#一階さ分用のマスター
-JPN_lag_gini <-JPN_master$gini-dplyr::lag(JPN_master$gini)
+#一階差分用のマスター
+JPN_lag_gini <- JPN_master$gini-dplyr::lag(JPN_master$gini)
+
 difference_JPN_master <- JPN_master %>%
   dplyr::mutate(diff_lgdp_per_capita=lgdp_per_capita-dplyr::lag(lgdp_per_capita),year=year,diff_gini=JPN_lag_gini)
-View(difference_JPN_master)
+
 difference_JPN_master<-difference_JPN_master %>%
   slice(-1)
 
@@ -272,8 +285,6 @@ difference_US_master<-US_master%>%
 difference_US_master<-difference_US_master%>%
   slice(-1)
 
-difference_JPN_master
-difference_US_master
 JPN_time_reg<-lm_robust(diff_gini~diff_lgdp_per_capita+I(diff_lgdp_per_capita^2),data=difference_JPN_master,se_type="HC3")
 print(JPN_time_reg)
 
@@ -281,9 +292,7 @@ US_time_reg<-lm_robust(diff_gini~diff_lgdp_per_capita+I(diff_lgdp_per_capita^2),
 print(JPN_time_reg)
 print(US_time_reg)
 
-#model_summary
-install.packages("modelsummary")
-library(modelsummary)
+
 regs <- list("detrend Linear Reg US"=US_general_reg,"time first difference US"=US_time_reg,"detrend Linear Reg JPN"=JPN_general_reg,"time first difference JPN"=JPN_time_reg)
 
 var_nam = c("(Intercept)" = "Constant","lgdp_per_capita" = "log gdp per capita", "I(lgdp_per_capita^2)" = "square  of log gdp per capita ","year"="year",
@@ -323,4 +332,6 @@ var_nam = c("(Intercept)" = "Constant","lgdp_per_capita" = "log gdp per capita",
 msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam)
 
 
-
+reg_summary<-msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam,output="reg_summary.csv")
+file_path <- here::here(output_dir_path,"reg_summary.csv")
+write.csv(reg_summary,file_path)

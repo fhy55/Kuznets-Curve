@@ -1,4 +1,4 @@
-
+#inequality ready
 nrow_gini<- nrow(long_gini_data)
 nrow_gini
 

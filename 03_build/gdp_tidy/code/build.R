@@ -1,11 +1,10 @@
-#gdp_ready
+#gdp_tidy
 
 raw_japan_gdp_path <- here::here("02_raw/gdp/data/Japan.csv")
 raw_japan_gdp_data <- readr::read_csv(raw_japan_gdp_path)
 
 raw_us_gdp_path <- here::here("02_raw/gdp/data/United States.csv")
 raw_us_gdp_data <- readr::read_csv(raw_us_gdp_path)
-
 
 
 #それぞれのデータの変数名に国名を加える

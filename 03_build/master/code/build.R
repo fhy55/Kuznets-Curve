@@ -1,4 +1,4 @@
-
+#master
 master_data<-convine_japan_us_gini%>%
   dplyr::inner_join(gdp_data,by="year","country")
 
