@@ -40,7 +40,7 @@ JPN_description<-tribble(
   "lgdp_per_capita", "一人当たりGDPの対数変換" ,mean(JPN_master$lgdp_per_capita)   , sd(JPN_master$lgdp_per_capita),length(JPN_master$lgdp_per_capita),
   "year","年",                round(mean(JPN_master$year),2)    , round(sd(JPN_master$year),2),length(JPN_master$year)
 )
-
+output_dir_path <- here::here("04_analyze/initial/figure")
 
 file_path <- here::here(output_dir_path,"US_description.csv")
 write.csv(US_description,file_path)
@@ -62,9 +62,6 @@ JPN_description_table <-JPN_description%>%
   kable_classic_2()
 
 
-save_kable(
-  US_description_table,
-  file=file_path)
 
 
 #散布図を描く
@@ -331,7 +328,7 @@ var_nam = c("(Intercept)" = "Constant","lgdp_per_capita" = "log gdp per capita",
 
 msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam)
 
-
+output_dir_path <- here::here("04_analyze/initial/table")
 reg_summary<-msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam,output="reg_summary.csv")
 file_path <- here::here(output_dir_path,"reg_summary.csv")
 write.csv(reg_summary,file_path)
