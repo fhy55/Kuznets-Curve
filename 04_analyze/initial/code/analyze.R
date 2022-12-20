@@ -332,3 +332,4 @@ output_dir_path <- here::here("04_analyze/initial/table")
 reg_summary<-msummary(regs,fmt = '%.2f',title="time detrend Linear RegとFD estimator比較",coef_map = var_nam,output="reg_summary.csv")
 file_path <- here::here(output_dir_path,"reg_summary.csv")
 write.csv(reg_summary,file_path)
+
